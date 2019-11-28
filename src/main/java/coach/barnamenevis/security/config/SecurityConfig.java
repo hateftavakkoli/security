@@ -1,5 +1,6 @@
 package coach.barnamenevis.security.config;
 
+import coach.barnamenevis.security.users.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +16,12 @@ import javax.sql.DataSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
+    private final UsersService usersService;
 
     @Autowired
-    public SecurityConfig(DataSource dataSource) {
+    public SecurityConfig(DataSource dataSource, UsersService usersService) {
         this.dataSource = dataSource;
+        this.usersService = usersService;
     }
 
     @Override
@@ -33,10 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(this.dataSource)
-                .usersByUsernameQuery("select email,password,enabled from users where email=?")
-                .authoritiesByUsernameQuery("select email,user_roles from authorities where email=?");
+        auth.userDetailsService(usersService);
     }
 
     @Bean

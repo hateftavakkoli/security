@@ -1,13 +1,16 @@
 package coach.barnamenevis.security.users.domain;
 
 import coach.barnamenevis.security.enums.UserRoles;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
-public class Users implements Serializable {
+public class Users implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue
@@ -18,7 +21,7 @@ public class Users implements Serializable {
 
     private Boolean enabled = true;
 
-    @ElementCollection(targetClass = UserRoles.class)
+    @ElementCollection(targetClass = UserRoles.class,fetch = FetchType.EAGER)
     @CollectionTable(
             name = "authorities",
             joinColumns = @JoinColumn(name = "email",referencedColumnName = "email"))
@@ -49,8 +52,38 @@ public class Users implements Serializable {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return userRoles;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public void setPassword(String password) {
