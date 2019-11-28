@@ -1,9 +1,10 @@
 package coach.barnamenevis.security.users.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import coach.barnamenevis.security.enums.UserRoles;
+
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 public class Users implements Serializable {
@@ -14,6 +15,15 @@ public class Users implements Serializable {
 
     private String email;
     private String password;
+
+    private Boolean enabled = true;
+
+    @ElementCollection(targetClass = UserRoles.class)
+    @CollectionTable(
+            name = "authorities",
+            joinColumns = @JoinColumn(name = "email",referencedColumnName = "email"))
+    @Enumerated(EnumType.STRING)
+    private List<UserRoles> userRoles;
 
     public Users() {
     }
@@ -45,5 +55,21 @@ public class Users implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public List<UserRoles> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(List<UserRoles> userRoles) {
+        this.userRoles = userRoles;
     }
 }
