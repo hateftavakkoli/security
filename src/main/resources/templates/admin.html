@@ -3,8 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin</title>
+    <style>
+        table {
+            margin-top: 10px;
+        }
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            padding: 2px;
+        }
+        table,td,th {
+            border: 1px solid gray;
+        }
+        td,th {
+            padding: 5px 30px;
+        }
+        a{
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>This is Admin Page</h1>
+<h1>This is Admin Page</h1>
+
+<a th:href="@{/admin/register}">New User</a>
+<a href="/logout">Logout</a>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Operation</th>
+    </tr>
+    <tr th:each="user : ${users}">
+        <th th:text="${user.id}"></th>
+        <td th:text="${user.email}"></td>
+        <td>
+            <ul>
+                <li th:each="role : ${user.userRoles}" th:text="${role.name()}"></li>
+            </ul>
+        </td>
+        <td>
+            <a th:href="@{/admin/edit/{id}(id=${user.id})}">Edit</a>
+            <a th:href="@{/admin/delete/{id}(id=${user.id})}">Delete</a>
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>
