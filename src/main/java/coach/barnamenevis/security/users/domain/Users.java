@@ -21,10 +21,10 @@ public class Users implements Serializable, UserDetails {
 
     private Boolean enabled = true;
 
-    @ElementCollection(targetClass = UserRoles.class,fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = UserRoles.class, fetch = FetchType.EAGER)
     @CollectionTable(
             name = "authorities",
-            joinColumns = @JoinColumn(name = "email",referencedColumnName = "email"))
+            joinColumns = @JoinColumn(name = "email", referencedColumnName = "email"))
     @Enumerated(EnumType.STRING)
     private List<UserRoles> userRoles;
 
@@ -61,6 +61,10 @@ public class Users implements Serializable, UserDetails {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String getUsername() {
         return email;
@@ -84,10 +88,6 @@ public class Users implements Serializable, UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Boolean getEnabled() {

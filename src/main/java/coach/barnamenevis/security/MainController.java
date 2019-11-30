@@ -3,14 +3,13 @@ package coach.barnamenevis.security;
 import coach.barnamenevis.security.users.domain.Users;
 import coach.barnamenevis.security.users.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class MainController {
@@ -27,6 +26,7 @@ public class MainController {
         return "index";
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/user")
     public String userPage() {
         return "user";
@@ -34,9 +34,10 @@ public class MainController {
 
     @GetMapping("/admin")
     public String adminPage(Model model) {
-        model.addAttribute("users",usersService.findAll());
+        model.addAttribute("users", usersService.findAll());
         return "admin";
     }
+
 
     @GetMapping(value = "/admin/register")
     public String registerPage(Model model) {
@@ -62,9 +63,9 @@ public class MainController {
         return "redirect:/admin";
     }
 
-
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
+
 }
