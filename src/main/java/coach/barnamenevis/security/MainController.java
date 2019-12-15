@@ -33,6 +33,7 @@ public class MainController {
     }
 
     @GetMapping("/admin")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String adminPage(Model model) {
         model.addAttribute("users", usersService.findAll());
         return "admin";
