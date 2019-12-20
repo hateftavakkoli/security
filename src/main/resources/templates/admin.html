@@ -42,7 +42,7 @@
         <td th:text="${user.email}"></td>
         <td>
             <ul>
-                <li th:each="role : ${user.userRoles}" th:text="${role.name()}"></li>
+                <li th:each="role : ${user.roles}" th:text="${role.name}"></li>
             </ul>
         </td>
         <td>

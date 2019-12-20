@@ -26,14 +26,14 @@ public class MainController {
         return "index";
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_USER')")
     @GetMapping("/user")
     public String userPage() {
         return "user";
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_ADMIN')")
     public String adminPage(Model model) {
         model.addAttribute("users", usersService.findAll());
         return "admin";
@@ -41,6 +41,7 @@ public class MainController {
 
 
     @GetMapping(value = "/admin/register")
+    @PreAuthorize("hasAuthority('OP_NEW_USER')")
     public String registerPage(Model model) {
         model.addAttribute("user", new Users());
         return "registerUser";

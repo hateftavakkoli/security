@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,12 +22,16 @@ public class Users implements Serializable, UserDetails {
 
     private Boolean enabled = true;
 
-    @ElementCollection(targetClass = UserRoles.class, fetch = FetchType.EAGER)
-    @CollectionTable(
-            name = "authorities",
-            joinColumns = @JoinColumn(name = "email", referencedColumnName = "email"))
-    @Enumerated(EnumType.STRING)
-    private List<UserRoles> userRoles;
+//    @ElementCollection(targetClass = UserRoles.class, fetch = FetchType.EAGER)
+//    @CollectionTable(
+//            name = "authorities",
+//            joinColumns = @JoinColumn(name = "email", referencedColumnName = "email"))
+//    @Enumerated(EnumType.STRING)
+//    private List<UserRoles> userRoles;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Roles> roles;
 
     public Users() {
     }
@@ -54,7 +59,10 @@ public class Users implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userRoles;
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Roles roles: roles)
+            authorities.addAll(roles.getAuthorities());
+        return authorities;
     }
 
     public String getPassword() {
@@ -98,11 +106,11 @@ public class Users implements Serializable, UserDetails {
         this.enabled = enabled;
     }
 
-    public List<UserRoles> getUserRoles() {
-        return userRoles;
+    public List<Roles> getRoles() {
+        return roles;
     }
 
-    public void setUserRoles(List<UserRoles> userRoles) {
-        this.userRoles = userRoles;
+    public void setRoles(List<Roles> roles) {
+        this.roles = roles;
     }
 }
