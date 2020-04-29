@@ -3,13 +3,11 @@ package coach.barnamenevis.security;
 import coach.barnamenevis.security.users.domain.Users;
 import coach.barnamenevis.security.users.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class MainController {
@@ -40,6 +38,14 @@ public class MainController {
     }
 
 
+    @GetMapping("/user/get/{id}")
+    @PostAuthorize("returnObject.email == authentication.name")
+    public @ResponseBody
+    Users getUser(@PathVariable("id") Long id) {
+        return usersService.findById(id);
+    }
+
+
     @GetMapping(value = "/admin/register")
     public String registerPage(Model model) {
         model.addAttribute("user", new Users());
@@ -54,7 +60,7 @@ public class MainController {
 
     @GetMapping(value = "/admin/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
-        usersService.deleteById(id);
+        usersService.deleteById(usersService.findById(id));
         return "redirect:/admin";
     }
 
@@ -68,5 +74,6 @@ public class MainController {
     public String loginPage() {
         return "login";
     }
+
 
 }

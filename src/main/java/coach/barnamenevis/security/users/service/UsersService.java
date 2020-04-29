@@ -3,6 +3,7 @@ package coach.barnamenevis.security.users.service;
 import coach.barnamenevis.security.users.domain.Users;
 import coach.barnamenevis.security.users.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,8 +36,9 @@ public class UsersService implements UserDetailsService {
         return usersRepository.getOne(id);
     }
 
-    public void deleteById(Long id) {
-        usersRepository.deleteById(id);
+    @PreAuthorize("#users.email != authentication.name")
+    public void deleteById(Users users) {
+        usersRepository.deleteById(users.getId());
     }
 
     @Transactional

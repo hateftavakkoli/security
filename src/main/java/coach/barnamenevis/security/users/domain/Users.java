@@ -1,6 +1,7 @@
 package coach.barnamenevis.security.users.domain;
 
 import coach.barnamenevis.security.enums.UserRoles;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Users implements Serializable, UserDetails {
 
     @Id
