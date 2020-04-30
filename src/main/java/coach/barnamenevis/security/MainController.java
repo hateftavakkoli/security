@@ -3,13 +3,11 @@ package coach.barnamenevis.security;
 import coach.barnamenevis.security.users.domain.Users;
 import coach.barnamenevis.security.users.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class MainController {
@@ -26,22 +24,29 @@ public class MainController {
         return "index";
     }
 
-    @PreAuthorize("hasAuthority('OP_ACCESS_USER')")
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/user")
     public String userPage() {
         return "user";
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasAuthority('OP_ACCESS_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String adminPage(Model model) {
         model.addAttribute("users", usersService.findAll());
         return "admin";
     }
 
 
+    @GetMapping("/user/get/{id}")
+    @PostAuthorize("returnObject.email == authentication.name")
+    public @ResponseBody
+    Users getUser(@PathVariable("id") Long id) {
+        return usersService.findById(id);
+    }
+
+
     @GetMapping(value = "/admin/register")
-    @PreAuthorize("hasAuthority('OP_NEW_USER')")
     public String registerPage(Model model) {
         model.addAttribute("user", new Users());
         return "registerUser";
@@ -55,7 +60,7 @@ public class MainController {
 
     @GetMapping(value = "/admin/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
-        usersService.deleteById(id);
+        usersService.deleteById(usersService.findById(id));
         return "redirect:/admin";
     }
 
@@ -70,9 +75,5 @@ public class MainController {
         return "login";
     }
 
-    @GetMapping("/error")
-    public String errorPage() {
-        return "error";
-    }
 
 }
