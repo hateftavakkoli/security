@@ -41,6 +41,7 @@ public class UsersService implements UserDetailsService {
         usersRepository.deleteById(users.getId());
     }
 
+
     @Transactional
     public void registerUser(Users users) {
         usersRepository.saveAndFlush(users);
