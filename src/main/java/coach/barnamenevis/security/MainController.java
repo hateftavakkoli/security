@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 public class MainController {
 
@@ -68,6 +70,12 @@ public class MainController {
     public String register(@ModelAttribute(name = "user") Users users) {
         usersService.registerUser(users);
         return "redirect:/admin";
+    }
+
+    @GetMapping("/info")
+    public @ResponseBody
+    Principal info(Principal principal) {
+        return principal;
     }
 
     @GetMapping("/login")
