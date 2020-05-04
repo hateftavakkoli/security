@@ -24,7 +24,6 @@ public class MainController {
         return "index";
     }
 
-    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/user")
     public String userPage() {
         return "user";
