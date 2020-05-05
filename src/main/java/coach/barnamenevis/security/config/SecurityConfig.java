@@ -36,8 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login").usernameParameter("email").successHandler(new LoginSuccessHandler())
+                .and().rememberMe().rememberMeCookieName("remember")
+                .tokenValiditySeconds(60)
+                .rememberMeParameter("remember")
                 .and().exceptionHandling().accessDeniedPage("/error")
-                .and().logout().logoutUrl("/mylogout");
+                .and().logout().logoutUrl("/mylogout").deleteCookies("remember");
     }
 
     @Override
