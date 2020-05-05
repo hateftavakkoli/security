@@ -24,14 +24,14 @@ public class MainController {
         return "index";
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_USER')")
     @GetMapping("/user")
     public String userPage() {
         return "user";
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('OP_ACCESS_ADMIN')")
     public String adminPage(Model model) {
         model.addAttribute("users", usersService.findAll());
         return "admin";
