@@ -1,17 +1,16 @@
 package coach.barnamenevis.security.users.domain;
 
-import coach.barnamenevis.security.enums.UserRoles;
+import coach.barnamenevis.security.enums.Authority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
-public class Users implements Serializable, UserDetails {
+public class Users implements Serializable, UserDetails, OAuth2User {
 
     @Id
     @GeneratedValue
@@ -19,6 +18,9 @@ public class Users implements Serializable, UserDetails {
 
     private String email;
     private String password;
+
+    private String name;
+    private String picture;
 
     private Boolean enabled = true;
 
@@ -57,12 +59,34 @@ public class Users implements Serializable, UserDetails {
         this.email = email;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return new HashMap<>();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Roles roles: roles)
-            authorities.addAll(roles.getAuthorities());
+        if (roles != null) {
+            for (Roles roles : roles)
+                authorities.addAll(roles.getAuthorities());
+        } else {
+            authorities.add(Authority.OP_ACCESS_USER);
+        }
         return authorities;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 
     public String getPassword() {
@@ -112,5 +136,9 @@ public class Users implements Serializable, UserDetails {
 
     public void setRoles(List<Roles> roles) {
         this.roles = roles;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

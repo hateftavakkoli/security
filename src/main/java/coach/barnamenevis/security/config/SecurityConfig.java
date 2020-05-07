@@ -20,10 +20,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final DataSource dataSource;
     private final UsersService usersService;
 
+    private final OAuth2UserService oAuth2UserService;
+
     @Autowired
-    public SecurityConfig(DataSource dataSource, UsersService usersService) {
+    public SecurityConfig(DataSource dataSource, UsersService usersService, OAuth2UserService oAuth2UserService) {
         this.dataSource = dataSource;
         this.usersService = usersService;
+        this.oAuth2UserService = oAuth2UserService;
     }
 
     @Override
@@ -35,8 +38,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                //.formLogin().loginPage("/login").usernameParameter("email").successHandler(new LoginSuccessHandler())
-                .oauth2Login()
+                .formLogin().loginPage("/login").usernameParameter("email").successHandler(new LoginSuccessHandler())
+                .and().oauth2Login()
+                .loginPage("/oauth2Login")
+                .authorizationEndpoint().baseUri("/login/oauth2").and()
+                .redirectionEndpoint().baseUri("/login/callback").and()
+                .userInfoEndpoint().userService(oAuth2UserService).and()
                 .and().rememberMe().rememberMeCookieName("remember")
                 .tokenValiditySeconds(60)
                 .rememberMeParameter("remember")
