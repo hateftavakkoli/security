@@ -75,7 +75,7 @@ public class Users implements Serializable, UserDetails, OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        if (roles != null) {
+        if (roles != null && !roles.isEmpty()) {
             for (Roles roles : roles)
                 authorities.addAll(roles.getAuthorities());
         } else {
@@ -86,7 +86,7 @@ public class Users implements Serializable, UserDetails, OAuth2User {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     public String getPassword() {

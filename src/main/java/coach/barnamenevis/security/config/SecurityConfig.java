@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizationEndpoint().baseUri("/login/oauth2").and()
                 .redirectionEndpoint().baseUri("/login/callback").and()
                 .userInfoEndpoint().userService(oAuth2UserService).and()
+                .successHandler(new LoginSuccessHandler())
                 .and().rememberMe().rememberMeCookieName("remember")
                 .tokenValiditySeconds(60)
                 .rememberMeParameter("remember")
