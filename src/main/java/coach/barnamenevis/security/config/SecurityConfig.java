@@ -1,5 +1,6 @@
 package coach.barnamenevis.security.config;
 
+import coach.barnamenevis.security.jwt.JwtFilter;
 import coach.barnamenevis.security.users.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +10,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -20,14 +23,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
     private final UsersService usersService;
-
+    private final JwtFilter jwtFilter;
     private final OAuth2UserService oAuth2UserService;
 
     @Autowired
-    public SecurityConfig(DataSource dataSource, UsersService usersService, OAuth2UserService oAuth2UserService) {
+    public SecurityConfig(DataSource dataSource, UsersService usersService, OAuth2UserService oAuth2UserService, JwtFilter jwtFilter) {
         this.dataSource = dataSource;
         this.usersService = usersService;
         this.oAuth2UserService = oAuth2UserService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Override
@@ -50,7 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .tokenValiditySeconds(60)
                 .rememberMeParameter("remember")
                 .and().exceptionHandling().accessDeniedPage("/error")
-                .and().logout().logoutUrl("/mylogout").deleteCookies("remember");
+                .and().logout().logoutUrl("/mylogout").deleteCookies("remember")
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

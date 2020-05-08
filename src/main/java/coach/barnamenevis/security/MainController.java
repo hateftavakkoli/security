@@ -123,6 +123,12 @@ public class MainController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/jwt/hello")
+    public @ResponseBody
+    String jwtHello() {
+        return "Hello Jwt";
+    }
+
 
     @GetMapping("/info")
     public @ResponseBody
