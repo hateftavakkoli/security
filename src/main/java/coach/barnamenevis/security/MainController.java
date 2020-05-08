@@ -5,6 +5,7 @@ import coach.barnamenevis.security.users.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,12 @@ public class MainController {
 
     private final UsersService usersService;
 
+    private final AuthenticationManager authenticationManager;
+
     @Autowired
-    public MainController(UsersService usersService) {
+    public MainController(UsersService usersService, AuthenticationManager authenticationManager) {
         this.usersService = usersService;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping("")
@@ -95,7 +99,6 @@ public class MainController {
         response.addCookie(cookie);
         return "login";
     }
-
 
     @GetMapping("/info")
     public @ResponseBody
