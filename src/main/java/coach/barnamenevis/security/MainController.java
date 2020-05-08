@@ -1,10 +1,16 @@
 package coach.barnamenevis.security;
 
+import coach.barnamenevis.security.jwt.JwtAuth;
+import coach.barnamenevis.security.jwt.JwtUtils;
 import coach.barnamenevis.security.users.domain.Users;
 import coach.barnamenevis.security.users.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +26,15 @@ public class MainController {
 
     private final UsersService usersService;
 
+    private final AuthenticationManager manager;
+
+    private final JwtUtils jwtUtils;
+
     @Autowired
-    public MainController(UsersService usersService) {
+    public MainController(UsersService usersService, AuthenticationManager manager, JwtUtils jwtUtils) {
         this.usersService = usersService;
+        this.manager = manager;
+        this.jwtUtils = jwtUtils;
     }
 
     @GetMapping("")
@@ -96,6 +108,21 @@ public class MainController {
         response.addCookie(cookie);
         return "login";
     }
+
+    @PostMapping("/jwt/login")
+    public @ResponseBody
+    ResponseEntity<?> jwtLogin(@RequestBody JwtAuth jwtAuth, HttpServletResponse response) {
+
+        try {
+            manager.authenticate(new UsernamePasswordAuthenticationToken(jwtAuth.getUsername(), jwtAuth.getPassword()));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        response.addHeader("Authorization", jwtUtils.generateToken(jwtAuth.getUsername()));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @GetMapping("/info")
     public @ResponseBody
