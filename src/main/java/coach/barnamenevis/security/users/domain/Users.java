@@ -24,6 +24,8 @@ public class Users implements Serializable, UserDetails, OAuth2User {
 
     private Boolean enabled = true;
 
+    private Boolean verified = false;
+
 //    @ElementCollection(targetClass = UserRoles.class, fetch = FetchType.EAGER)
 //    @CollectionTable(
 //            name = "authorities",
@@ -67,6 +69,18 @@ public class Users implements Serializable, UserDetails, OAuth2User {
         this.picture = picture;
     }
 
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
         return new HashMap<>();
@@ -87,6 +101,10 @@ public class Users implements Serializable, UserDetails, OAuth2User {
     @Override
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -122,10 +140,6 @@ public class Users implements Serializable, UserDetails, OAuth2User {
         return enabled;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
@@ -136,9 +150,5 @@ public class Users implements Serializable, UserDetails, OAuth2User {
 
     public void setRoles(List<Roles> roles) {
         this.roles = roles;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

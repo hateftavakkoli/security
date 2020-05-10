@@ -17,6 +17,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+
         if (authentication.getAuthorities().contains(Authority.OP_ACCESS_ADMIN)) {
             redirect.sendRedirect(httpServletRequest, httpServletResponse, "/admin");
         } else if (authentication.getAuthorities().contains(Authority.OP_ACCESS_USER)) {
