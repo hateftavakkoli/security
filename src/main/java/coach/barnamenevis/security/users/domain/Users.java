@@ -24,8 +24,6 @@ public class Users implements Serializable, UserDetails, OAuth2User {
 
     private Boolean enabled = true;
 
-    private Boolean verified = false;
-
 //    @ElementCollection(targetClass = UserRoles.class, fetch = FetchType.EAGER)
 //    @CollectionTable(
 //            name = "authorities",
@@ -71,14 +69,6 @@ public class Users implements Serializable, UserDetails, OAuth2User {
 
     public Boolean getEnabled() {
         return enabled;
-    }
-
-    public Boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
     }
 
     @Override
