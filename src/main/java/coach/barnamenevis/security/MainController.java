@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.Random;
 
 @Controller
 public class MainController {
@@ -134,6 +135,41 @@ public class MainController {
     public @ResponseBody
     Principal getCookie(Principal principal) {
         return principal;
+    }
+
+    @GetMapping("/otp/login")
+    public String otpLogin() {
+        return "otp-username";
+    }
+
+    @PostMapping("/otp/checkUsername")
+    public String checkUsername(@ModelAttribute("email") String email, HttpSession session) {
+        Users users = (Users) usersService.loadUserByUsername(email);
+        Random random = new Random();
+        int password;
+
+        if (users == null) {
+            users = new Users();
+            users.setEmail(email);
+            password = random.nextInt(9999);
+            System.out.println(password);
+            users.setPassword(String.valueOf(password));
+            usersService.registerUser(users);
+        } else {
+            password = random.nextInt(9999);
+            System.out.println(password);
+            users.setPassword(String.valueOf(password));
+            usersService.registerUser(users);
+        }
+        session.setAttribute("email", email);
+        return "redirect:/otp/checkPassword";
+    }
+
+    @GetMapping("/otp/checkPassword")
+    public String otpPass(HttpSession httpSession, Model model) {
+        String email = httpSession.getAttribute("email").toString();
+        model.addAttribute("email", email);
+        return "otp-password";
     }
 
 }
